@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { background: #eef2ff; font-family: 'Segoe UI'; display: flex; justify-content: center; padding-top: 40px; }
+        .quiz { background: white; padding: 30px; border-radius: 15px; width: 450px; border-left: 10px solid #4f46e5; }
+        .choice { display: block; width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; text-align: left; background: white; }
+        .choice:hover { background: #f5f3ff; border-color: #4f46e5; }
+        #result { display: none; font-size: 22px; color: #4f46e5; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="quiz" id="main">
+        <h2 id="question">Savol 1</h2>
+        <div id="choices"></div>
+    </div>
+    <div class="quiz" id="result">
+        <h2>Sizga mos kasb:</h2>
+        <h1 id="prof">...</h1>
+    </div>
+
+    <script>
+        const qs = [
+            { t: "Sizga nima ko'proq yoqadi?", c: [{t:"Chiroyli dizaynlar", v:"front"}, {t:"Murakkab hisob-kitoblar", v:"back"}] },
+            { t: "Qaysi qurilmada ishlash qulay?", c: [{t:"Kompyuterda", v:"back"}, {t:"Telefonda", v:"mob"}] },
+            { t: "Xatolarni tuzatishni yoqtirasizmi?", c: [{t:"Ha, oxirigacha boraman", v:"back"}, {t:"Tezroq natija ko'rishni xohlayman", v:"front"}] }
+        ];
+        let score = { front: 0, back: 0, mob: 0 };
+        let cur = 0;
+
+        function load() {
+            const data = qs[cur];
+            document.getElementById('question').innerText = data.t;
+            const div = document.getElementById('choices');
+            div.innerHTML = "";
+            data.c.forEach(ch => {
+                const b = document.createElement('button');
+                b.className = "choice";
+                b.innerText = ch.t;
+                b.onclick = () => {
+                    score[ch.v]++;
+                    cur++;
+                    if (cur < qs.length) load();
+                    else show();
+                };
+                div.appendChild(b);
+            });
+        }
+
+        function show() {
+            document.getElementById('main').style.display = "none";
+            document.getElementById('result').style.display = "block";
+            let res = Object.keys(score).reduce((a, b) => score[a] > score[b] ? a : b);
+            const profs = { front: "Frontend Dasturchi", back: "Backend Muhandisi", mob: "Mobil Dasturchi" };
+            document.getElementById('prof').innerText = profs[res];
+        }
+        load();
+    </script>
+</body>
+</html>
